@@ -1,0 +1,11 @@
+openai:
+  model: "gpt-3.5-turbo"
+  max_tokens: 100
+
+anthropic:
+  model: "claude-3-sonnet-20240229"
+  max_tokens: 150
+  temperature: 0
+
+cohere:
+  model: "command_r" 
