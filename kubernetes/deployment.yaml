@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp
+        image: rssa_test_app:latest
+        imagePullPolicy: Never
+        env:
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: api-keys
+              key: OPENAI_API_KEY
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: INPUT_SOURCE
+          value: "file"
+        - name: API_URL
+          value: "https://api.example.com/data"
