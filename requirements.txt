@@ -1,0 +1,12 @@
+annoy==1.17.3
+anthropic==0.34.2
+beautifulsoup4==4.12.3
+cohere==5.9.4
+openai==1.47.0
+pytest==8.3.2
+python-dotenv==1.0.1
+PyYAML==6.0.2
+PyYAML==6.0.2
+Requests==2.32.3
+sentence_transformers==2.2.2
+html5lib==1.1

@@ -1,9 +1,6 @@
-import time
 import os
 from logging_config import setup_logging
 from valid_html import validate_llm_html
-from rag_elements.vector_store import VectorStore
-from rag_elements.embedding import EmbeddingModel
 from llm_interface import (
     OpenAIProvider,
     CohereAIProvider,
@@ -14,37 +11,6 @@ from output_handler import get_output_handler
 from input_handler import get_input_handler
 
 logger = setup_logging()
-
-
-def timeit(method):
-    def timed(*args, **kw):
-        ts = time.time()
-        result = method(*args, **kw)
-        te = time.time()
-        logger.info(f"{method.__name__} took {te - ts:.2f} seconds")
-        return result
-
-    return timed
-
-
-@timeit
-def load_vector_store(file_path):
-    return VectorStore.load(file_path)
-
-
-@timeit
-def embed_user_data(embedding_model: EmbeddingModel, user_data):
-    return embedding_model.embed(user_data)
-
-
-@timeit
-def search_relevant_rules(vector_store: VectorStore, user_vector):
-    return vector_store.search(user_vector)
-
-
-@timeit
-def analyze_with_llm(llm, query, context):
-    return llm.analyze(query, context)
 
 
 def get_openai_provider():
@@ -100,27 +66,6 @@ def main():
         logger.error(f"Error preprocessing user data: {e}")
         return
 
-    # The following code block is used to create the elements needed for RAG:
-    # embedding model, vector_store, user_vector, relevant_rules.
-    # The vector_store is generated using the rules_ingestor.py script along with a rules.json file.
-
-    """
-    embedding_model = EmbeddingModel()
-
-    try:
-        vector_store = load_vector_store("rag_elements/rules_vector_store")
-    except FileNotFoundError as e:
-        logger.error(f"Error loading vector store: {e}")
-        return
-
-    user_vector = embed_user_data(embedding_model, user_data)
-    relevant_rules = search_relevant_rules(vector_store, user_vector)
-
-    context = f"User Data:\n{user_data}\n\nRelevant Rules:\n" + "\n\n".join(
-        relevant_rules
-    )
-    """
-
     context = f"User Data:\n{user_data}\n"
 
     query = """
@@ -135,7 +80,7 @@ def main():
     The output should have all elements needed so that it could be displayed correctly by any modern browser.
     """
 
-    analysis_result = analyze_with_llm(llm, query, context)
+    analysis_result = llm.analyze(query, context)
     validated: tuple = validate_llm_html(analysis_result)
 
     if validated[0] is True:
