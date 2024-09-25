@@ -2,6 +2,7 @@ import os
 import json
 from abc import ABC, abstractmethod
 import requests
+from urllib.parse import urlparse
 
 
 class InputHandler(ABC):
@@ -12,6 +13,10 @@ class InputHandler(ABC):
 
 class FileInputHandler(InputHandler):
     def __init__(self, file_path):
+        if not isinstance(file_path, str):
+            raise TypeError("file_path must be a string")
+        if not file_path:
+            raise ValueError("file_path cannot be empty")
         self.file_path = file_path
 
     def get_input(self):
@@ -23,6 +28,12 @@ class FileInputHandler(InputHandler):
 
 class APIInputHandler(InputHandler):
     def __init__(self, api_url, api_key=None):
+        if not isinstance(api_url, str):
+            raise TypeError("api_url must be a string")
+        if not api_url:
+            raise ValueError("api_url cannot be empty")
+        if not self._is_valid_url(api_url):
+            raise ValueError("Invalid URL format")
         self.api_url = api_url
         self.api_key = api_key
 
@@ -31,6 +42,14 @@ class APIInputHandler(InputHandler):
         response = requests.get(self.api_url, headers=headers)
         response.raise_for_status()  # Raises an HTTPError for bad responses
         return response.json()
+
+    @staticmethod
+    def _is_valid_url(url):
+        try:
+            result = urlparse(url)
+            return all([result.scheme, result.netloc])
+        except ValueError:
+            return False
 
 
 def get_input_handler(input_source, **kwargs):

@@ -10,6 +10,8 @@ COPY . /app
 
 RUN pip install --no-cache-dir -r requirements.txt
 
+RUN pip install -e .
+
 ENTRYPOINT ["python", "-u", "src/main.py"]
 
 CMD []
