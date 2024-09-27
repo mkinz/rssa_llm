@@ -11,6 +11,8 @@ from llm_interface import (
 from roadmap_output_ingestor import preprocess_roadmap_output
 from logging_config import get_logger
 
+from dotenv import load_dotenv
+
 app = Flask(__name__)
 app.logger.removeHandler(default_handler)
 logger = get_logger(__name__)
@@ -28,13 +30,15 @@ def get_cohere_provider():
     return CohereAIProvider()
 
 
+load_dotenv()
+
 llm_strategy = {
     "openai": get_openai_provider,
     "anthropic": get_anthropic_provider,
     "cohere": get_cohere_provider,
 }
-
-llm_provider = llm_strategy["openai"]
+llm_provider = llm_strategy[os.getenv("LLM_PROVIDER")]
+logger.debug(f"Using LLM provider: {llm_provider}")
 llm = llm_provider()
 
 
