@@ -1,7 +1,6 @@
-import http.server
-import socketserver
+import requests
 import json
-from datetime import datetime, timedelta
+import argparse
 
 # Sample data matching the format expected by roadmap_output_ingestor.py
 sample_data = {
@@ -144,19 +143,39 @@ sample_data = {
 }
 
 
-class MockAPIHandler(http.server.SimpleHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(200)
-        self.send_header("Content-type", "application/json")
-        self.end_headers()
-        self.wfile.write(json.dumps(sample_data).encode())
+def send_request(url, data):
+    """Send a POST request to the specified URL with the given data."""
+    try:
+        response = requests.post(url, json=data)
+        response.raise_for_status()
+        return response.json()
+    except requests.RequestException as e:
+        print(f"Error sending request: {e}")
+        return None
 
 
-def run_mock_api(port=8000):
-    with socketserver.TCPServer(("", port), MockAPIHandler) as httpd:
-        print(f"Serving mock API at port {port}")
-        httpd.serve_forever()
+def main():
+    parser = argparse.ArgumentParser(description="Mock API client for testing.")
+    parser.add_argument(
+        "--url", default="http://localhost:5050/process", help="URL of the API endpoint"
+    )
+    parser.add_argument("--output", help="File to save the response")
+    args = parser.parse_args()
+
+    print(f"Sending request to {args.url}")
+    response = send_request(args.url, sample_data)
+
+    if response:
+        print("Response received:")
+        print(json.dumps(response, indent=2))
+
+        if args.output:
+            with open(args.output, "w") as f:
+                json.dump(response, f, indent=2)
+            print(f"Response saved to {args.output}")
+    else:
+        print("No response received.")
 
 
 if __name__ == "__main__":
-    run_mock_api()
+    main()

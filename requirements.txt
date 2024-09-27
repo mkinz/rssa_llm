@@ -10,3 +10,4 @@ PyYAML==6.0.2
 Requests==2.32.3
 sentence_transformers==2.2.2
 html5lib==1.1
+flask==3.0.3

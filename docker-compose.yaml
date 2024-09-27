@@ -10,8 +10,8 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - PYTHONUNBUFFERED=1
       - INPUT_SOURCE=api # this will be changed to api in production
-      - API_URL=http://host.docker.internal:8000 
-      - API_KEY=your-api-key-here
+      - API_KEY=${API_KEY}
+      - API_URL=${API_URL}
       - PORT=5050
     
     volumes:
