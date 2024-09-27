@@ -2,8 +2,9 @@ __pycache__/
 *.pyc
 venv/
 app.log
+app.log.timed
 .env
 .DS_Store
 secrets/
 src/secrets/
-reponse.json
+response.json
