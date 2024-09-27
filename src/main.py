@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask.logging import default_handler
 import os
 from logging_config import setup_logging
 from valid_html import validate_llm_html
@@ -8,9 +9,11 @@ from llm_interface import (
     AnthropicAIProvider,
 )
 from roadmap_output_ingestor import preprocess_roadmap_output
+from logging_config import get_logger
 
 app = Flask(__name__)
-logger = setup_logging()
+app.logger.removeHandler(default_handler)
+logger = get_logger(__name__)
 
 
 def get_openai_provider():
@@ -44,8 +47,6 @@ def process_data():
         if not user_data:
             return jsonify({"error": "No data provided"}), 400
 
-        logger.info(f"User data: {user_data}")
-
         preprocessed_data = preprocess_roadmap_output(user_data)
         context = f"User Data:\n{preprocessed_data}\n"
 
@@ -65,7 +66,10 @@ def process_data():
         - Use appropriate semantic HTML5 tags where possible (e.g., <header>, <main>, <section>, <article>).
         """
 
+        logger.info("Performing LLM analysis now...")
         analysis_result = llm.analyze(query, context)
+
+        logger.info("Performing HTML validation now...")
         validated = validate_llm_html(analysis_result)
 
         if validated[0]:
@@ -94,5 +98,6 @@ def process_data():
 
 
 if __name__ == "__main__":
+    setup_logging()
     port = int(os.environ.get("PORT", 5050))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    app.run(host="0.0.0.0", port=port, debug=False)

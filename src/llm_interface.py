@@ -7,6 +7,10 @@ from openai import OpenAI
 from dotenv import load_dotenv
 
 from llm_config_manager import LLMConfigManager
+from logging_config import get_logger
+
+
+logger = get_logger(__name__)
 
 
 class BaseAIProvider(ABC):
@@ -18,6 +22,7 @@ class BaseAIProvider(ABC):
         self.api_key = self.manager.get_api_key(self.provider_name)
         self.model = self.config["model"]
         self.client = self._create_client()
+        logger.info("Instantiated BaseAIProvider class")
 
     @abstractmethod
     def _create_client(self) -> Any:
@@ -49,6 +54,7 @@ class BaseAIProvider(ABC):
 class OpenAIProvider(BaseAIProvider):
     def __init__(self):
         super().__init__("openai")
+        logger.info("Instantiated OpenAIProvider class")
 
     def _create_client(self):
         return OpenAI(api_key=self.api_key)
@@ -68,7 +74,9 @@ class CohereAIProvider(BaseAIProvider):
         return cohere.Client(api_key=self.api_key)
 
     def _send_request(self, messages) -> Any:
-        formatted_message = "\n".join([f"{msg['role']}: {msg['content']}" for msg in messages])
+        formatted_message = "\n".join(
+            [f"{msg['role']}: {msg['content']}" for msg in messages]
+        )
         response = self.client.chat(
             message=formatted_message,
         )
