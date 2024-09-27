@@ -4,7 +4,6 @@ import os
 from logging_config import setup_logging
 from valid_html import validate_llm_html
 from llm_interface import (
-    BaseAIProvider,
     OpenAIProvider,
     CohereAIProvider,
     AnthropicAIProvider,
@@ -19,16 +18,28 @@ app.logger.removeHandler(default_handler)
 logger = get_logger(__name__)
 
 
+def get_openai_provider():
+    return OpenAIProvider()
+
+
+def get_anthropic_provider():
+    return AnthropicAIProvider()
+
+
+def get_cohere_provider():
+    return CohereAIProvider()
+
+
 load_dotenv()
 
-llm_strategy: dict[str, BaseAIProvider] = {
-    "openai": OpenAIProvider(),
-    "anthropic": AnthropicAIProvider(),
-    "cohere": CohereAIProvider(),
+llm_strategy = {
+    "openai": get_openai_provider,
+    "anthropic": get_anthropic_provider,
+    "cohere": get_cohere_provider,
 }
-
-llm = llm_strategy[os.getenv("LLM_PROVIDER")]
-logger.debug(f"Using LLM provider: {llm}")
+llm_provider = llm_strategy[os.getenv("LLM_PROVIDER")]
+logger.debug(f"Using LLM provider: {llm_provider}")
+llm = llm_provider()
 
 
 @app.route("/process", methods=["POST"])
