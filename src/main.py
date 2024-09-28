@@ -10,6 +10,7 @@ from llm_interface import (
 )
 from roadmap_output_ingestor import preprocess_roadmap_output
 from logging_config import get_logger
+from html_cleaner import strip_newlines_from_html
 
 from dotenv import load_dotenv
 
@@ -66,20 +67,20 @@ def process_data():
         - Provide your response as a complete, properly formatted HTML document, including <!DOCTYPE html>, <html>, <head>, and <body> tags.
         - Minimize the use of newline characters. Only use them where necessary for HTML structure (e.g., between major elements like <head> and <body>).
         - Do not include any markdown formatting or code block syntax.
-        - Do not include any newline chars like '\n'
         - Ensure all tags are properly closed and the HTML is valid.
         - Use appropriate semantic HTML5 tags where possible (e.g., <header>, <main>, <section>, <article>).
         """
 
         logger.info("Performing LLM analysis now...")
         analysis_result = llm.analyze(query, context)
+        cleaned_results = strip_newlines_from_html(analysis_result)
 
         logger.info("Performing HTML validation now...")
-        validated, validation_message = validate_llm_html(analysis_result)
+        validated, validation_message = validate_llm_html(cleaned_results)
 
         if validated:
             logger.info("HTML was validated!")
-            return jsonify({"status": "success", "html_report": analysis_result})
+            return jsonify({"status": "success", "html_report": cleaned_results})
         else:
             logger.error(f"HTML Validation failed: {validation_message}")
             return jsonify(
