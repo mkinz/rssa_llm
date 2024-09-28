@@ -66,6 +66,7 @@ def process_data():
         - Provide your response as a complete, properly formatted HTML document, including <!DOCTYPE html>, <html>, <head>, and <body> tags.
         - Minimize the use of newline characters. Only use them where necessary for HTML structure (e.g., between major elements like <head> and <body>).
         - Do not include any markdown formatting or code block syntax.
+        - Do not include any newline chars like '\n'
         - Ensure all tags are properly closed and the HTML is valid.
         - Use appropriate semantic HTML5 tags where possible (e.g., <header>, <main>, <section>, <article>).
         """
@@ -74,19 +75,19 @@ def process_data():
         analysis_result = llm.analyze(query, context)
 
         logger.info("Performing HTML validation now...")
-        validated = validate_llm_html(analysis_result)
+        validated, validation_message = validate_llm_html(analysis_result)
 
-        if validated[0]:
+        if validated:
             logger.info("HTML was validated!")
             return jsonify({"status": "success", "html_report": analysis_result})
         else:
-            logger.error("HTML Validation failed. LLM returned invalid html.")
-            logger.error(validated[1])
+            logger.error(f"HTML Validation failed: {validation_message}")
             return jsonify(
                 {
                     "status": "error",
                     "message": "HTML validation failed",
-                    "details": validated[1],
+                    "details": validation_message,
+                    "partial_response": validation_message[:1000],
                 }
             ), 500
 

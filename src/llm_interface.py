@@ -92,17 +92,35 @@ class AnthropicAIProvider(BaseAIProvider):
         return anthropic.Anthropic(api_key=self.api_key)
 
     def _send_request(self, messages):
-        response = self.client.messages.create(
-            model=self.model,
-            max_tokens=self.config["max_tokens"],
-            temperature=self.config["temperature"],
-            messages=messages,
+        system_message = next(
+            (msg["content"] for msg in messages if msg["role"] == "system"), None
         )
+        user_messages = [msg for msg in messages if msg["role"] == "user"]
 
-        if response.content and len(response.content) > 0:
-            return response.content[0].text
-        else:
-            return "No content found in response"
+        logger.debug(
+            f"Sending request to Anthropic API. System message: {system_message}"
+        )
+        logger.debug(f"User messages: {user_messages}")
+
+        try:
+            response = self.client.messages.create(
+                model=self.model,
+                max_tokens=self.config["max_tokens"],
+                temperature=self.config["temperature"],
+                system=system_message,
+                messages=user_messages,
+            )
+
+            logger.debug(f"Received response from Anthropic API: {response}")
+
+            if response.content and len(response.content) > 0:
+                return response.content[0].text
+            else:
+                logger.warning("No content found in Anthropic API response")
+                return "No content found in response"
+        except anthropic.APIError as e:
+            logger.error(f"Anthropic API error: {str(e)}")
+            raise
 
 
 '''
