@@ -47,4 +47,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    # python mock_api.py --url http://localhost:5050/process --output response.json
+    # python mock_api.py --url http://localhost:5050/process --output response.json --input src/client-exports/hall_munster.json
