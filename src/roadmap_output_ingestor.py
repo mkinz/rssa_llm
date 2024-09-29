@@ -332,6 +332,8 @@ def preprocess_roadmap_output(raw_data) -> str | None:
 
 # Example usage
 if __name__ == "__main__":
-    file_path = "client-exports/daniels_uphill.json"
-    preprocessed_data = preprocess_roadmap_output(file_path)
-    print(preprocessed_data)
+    file_path = "src/client-exports/daniels_uphill.json"
+    with open(file_path, "r") as raw_json_data:
+        json_data = json.load(raw_json_data)
+    preprocessed_data = preprocess_roadmap_output(json_data)
+    print(json_data)
