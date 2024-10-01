@@ -12,7 +12,10 @@ from roadmap_output_ingestor import preprocess_roadmap_output
 from logging_config import get_logger
 from html_cleaner import strip_newlines_from_html
 
+from config_manager import ConfigManager
 from dotenv import load_dotenv
+
+config_manager = ConfigManager()
 
 app = Flask(__name__)
 app.logger.removeHandler(default_handler)
@@ -20,15 +23,15 @@ logger = get_logger(__name__)
 
 
 def get_openai_provider():
-    return OpenAIProvider()
+    return OpenAIProvider(config_manager)
 
 
 def get_anthropic_provider():
-    return AnthropicAIProvider()
+    return AnthropicAIProvider(config_manager)
 
 
 def get_cohere_provider():
-    return CohereAIProvider()
+    return CohereAIProvider(config_manager)
 
 
 load_dotenv()
@@ -38,7 +41,7 @@ llm_strategy = {
     "anthropic": get_anthropic_provider,
     "cohere": get_cohere_provider,
 }
-llm_provider = llm_strategy[os.getenv("LLM_PROVIDER")]
+llm_provider = llm_strategy[config_manager.llm_provider]
 logger.debug(f"Using LLM provider: {llm_provider}")
 llm = llm_provider()
 
@@ -105,5 +108,5 @@ def process_data():
 
 if __name__ == "__main__":
     setup_logging()
-    port = int(os.environ.get("PORT", 5050))
+    port = int(config_manager.port)
     app.run(host="0.0.0.0", port=port, debug=False)

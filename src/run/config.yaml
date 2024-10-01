@@ -1,3 +1,7 @@
+general:
+  llm_provider: "openai"
+  port: 5050
+
 openai:
   model: "gpt-3.5-turbo"
   max_tokens: 100

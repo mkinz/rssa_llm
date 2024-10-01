@@ -5,10 +5,16 @@ from logging_config import get_logger
 logger = get_logger(__name__)
 
 
-class LLMConfigManager:
-    def __init__(self, config_path="src/run/llm_config.yaml"):
+class ConfigManager:
+    def __init__(self, config_path="src/run/config.yaml"):
         self.config_path = config_path
         self.config = self._load_config()
+        self.port = self._get_port()
+        self.llm_provider = self._get_llm_provider()
+        self.api_key = self.get_api_key(llm_name=self.llm_provider)
+        self.llm_config = self.get_llm_config(llm_name=self.llm_provider)
+        self.model = self.llm_config["model"]
+
         logger.info("Using LLM Config manager")
 
     def _load_config(self):
@@ -33,5 +39,18 @@ class LLMConfigManager:
         logger.info(f"Using llm config for: {self.config[llm_name]}")
         return self.config[llm_name]
 
-    def get_available_llms(self):
-        return list(self.config.keys())
+    def _get_port(self):
+        return self.config["general"]["port"]
+
+    def _get_llm_provider(self):
+        return self.config["general"]["llm_provider"]
+
+
+if __name__ == "__main__":
+    manager = ConfigManager()
+    print(manager.config)
+    print(manager.port)
+    print(manager.llm_provider)
+    print(manager.api_key)
+    print(manager.llm_config)
+    print(manager.llm_config["model"])

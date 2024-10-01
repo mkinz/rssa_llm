@@ -6,7 +6,7 @@ import cohere
 from openai import OpenAI
 from dotenv import load_dotenv
 
-from llm_config_manager import LLMConfigManager
+from config_manager import ConfigManager
 from logging_config import get_logger
 
 
@@ -14,13 +14,13 @@ logger = get_logger(__name__)
 
 
 class BaseAIProvider(ABC):
-    def __init__(self, provider_name):
+    def __init__(self, config_manager: ConfigManager):
         load_dotenv()
-        self.provider_name = provider_name
-        self.manager = LLMConfigManager()
-        self.config = self.manager.get_llm_config(self.provider_name)
-        self.api_key = self.manager.get_api_key(self.provider_name)
-        self.model = self.config["model"]
+        self.manager = config_manager
+        self.llm_provider = self.manager.llm_provider
+        self.api_key = self.manager.api_key
+        self.model = self.manager.model
+        self.llm_config = self.manager.llm_config
         self.client = self._create_client()
         logger.info("Instantiated BaseAIProvider class")
 
@@ -52,8 +52,8 @@ class BaseAIProvider(ABC):
 
 
 class OpenAIProvider(BaseAIProvider):
-    def __init__(self):
-        super().__init__("openai")
+    def __init__(self, config_manager: ConfigManager):
+        super().__init__(config_manager)
         logger.info("Instantiated OpenAIProvider class")
 
     def _create_client(self):
@@ -67,8 +67,8 @@ class OpenAIProvider(BaseAIProvider):
 
 
 class CohereAIProvider(BaseAIProvider):
-    def __init__(self):
-        super().__init__("cohere")
+    def __init__(self, config_manager: ConfigManager):
+        super().__init__(config_manager)
 
     def _create_client(self) -> Any:
         return cohere.Client(api_key=self.api_key)
@@ -85,8 +85,8 @@ class CohereAIProvider(BaseAIProvider):
 
 
 class AnthropicAIProvider(BaseAIProvider):
-    def __init__(self):
-        super().__init__("anthropic")
+    def __init__(self, config_manager: ConfigManager):
+        super().__init__(config_manager)
 
     def _create_client(self) -> Any:
         return anthropic.Anthropic(api_key=self.api_key)
@@ -105,8 +105,8 @@ class AnthropicAIProvider(BaseAIProvider):
         try:
             response = self.client.messages.create(
                 model=self.model,
-                max_tokens=self.config["max_tokens"],
-                temperature=self.config["temperature"],
+                max_tokens=self.manager.llm_config["max_tokens"],
+                temperature=self.manager.llm_config["temperature"],
                 system=system_message,
                 messages=user_messages,
             )
