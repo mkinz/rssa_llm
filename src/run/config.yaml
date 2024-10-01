@@ -4,7 +4,7 @@ general:
 
 openai:
   model: "gpt-3.5-turbo"
-  max_tokens: 100
+  max_tokens: 4000
 
 anthropic:
   model: "claude-3-sonnet-20240229"

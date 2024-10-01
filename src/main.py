@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
 from flask.logging import default_handler
-import os
 from logging_config import setup_logging
 from valid_html import validate_llm_html
 from llm_interface import (
@@ -15,6 +14,10 @@ from html_cleaner import strip_newlines_from_html
 from config_manager import ConfigManager
 from dotenv import load_dotenv
 
+# set environment vars
+load_dotenv()
+
+# set global configuration
 config_manager = ConfigManager()
 
 app = Flask(__name__)
@@ -33,8 +36,6 @@ def get_anthropic_provider():
 def get_cohere_provider():
     return CohereAIProvider(config_manager)
 
-
-load_dotenv()
 
 llm_strategy = {
     "openai": get_openai_provider,

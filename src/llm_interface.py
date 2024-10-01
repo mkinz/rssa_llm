@@ -4,7 +4,6 @@ from typing import Any
 import anthropic
 import cohere
 from openai import OpenAI
-from dotenv import load_dotenv
 
 from config_manager import ConfigManager
 from logging_config import get_logger
@@ -15,7 +14,6 @@ logger = get_logger(__name__)
 
 class BaseAIProvider(ABC):
     def __init__(self, config_manager: ConfigManager):
-        load_dotenv()
         self.manager = config_manager
         self.llm_provider = self.manager.llm_provider
         self.api_key = self.manager.api_key
@@ -121,34 +119,3 @@ class AnthropicAIProvider(BaseAIProvider):
         except anthropic.APIError as e:
             logger.error(f"Anthropic API error: {str(e)}")
             raise
-
-
-'''
-class OllamaProvider:
-    """
-    Note: Ollama server must be running locally before this will work.
-    commands: ollama serve
-    """
-
-    def __init__(self):
-        # def __init__(self, model="gemma2:9b"):
-        self.api_url = "http://localhost:11434/api/generate"
-        # print(f"using {self.model}")
-
-    def analyze(self, query, context):
-        prompt = f"""
-        You are a helpful assistant that analyzes social security data. Please do the following:
-
-        Analyze the following social security data and provide insights:
-        Context: {context}
-        Query: {query}
-        """
-
-        payload = {"model": self.model, "prompt": prompt, "stream": False}
-
-        response = requests.post(self.api_url, json=payload)
-        if response.status_code == 200:
-            return json.loads(response.text)["response"]
-        else:
-            raise Exception(f"Error from Ollama API: {response.text}")
-            '''
