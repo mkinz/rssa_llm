@@ -15,7 +15,7 @@ logger = get_logger(__name__)
 class BaseAIProvider(ABC):
     def __init__(self, config_manager: ConfigManager):
         self.manager = config_manager
-        self.llm_provider = self.manager.llm_provider
+        self.llm_provider = self.manager.llm_provider_name
         self.api_key = self.manager.api_key
         self.model = self.manager.model
         self.llm_config = self.manager.llm_config

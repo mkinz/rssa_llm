@@ -42,7 +42,7 @@ llm_strategy = {
     "anthropic": get_anthropic_provider,
     "cohere": get_cohere_provider,
 }
-llm_provider = llm_strategy[config_manager.llm_provider]
+llm_provider = llm_strategy[config_manager.llm_provider_name]
 logger.debug(f"Using LLM provider: {llm_provider}")
 llm = llm_provider()
 
@@ -109,5 +109,4 @@ def process_data():
 
 if __name__ == "__main__":
     setup_logging()
-    port = int(config_manager.port)
-    app.run(host="0.0.0.0", port=port, debug=False)
+    app.run(host=config_manager.host, port=int(config_manager.port), debug=False)

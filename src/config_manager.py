@@ -10,9 +10,10 @@ class ConfigManager:
         self.config_path = config_path
         self.config = self._load_config()
         self.port = self._get_port()
-        self.llm_provider = self._get_llm_provider()
-        self.api_key = self._get_api_key(llm_provider=self.llm_provider)
-        self.llm_config = self._get_llm_config(llm_name=self.llm_provider)
+        self.host = self._get_host()
+        self.llm_provider_name = self._get_llm_provider()
+        self.api_key = self._get_api_key(llm_provider=self.llm_provider_name)
+        self.llm_config = self._get_llm_config(llm_name=self.llm_provider_name)
         self.model = self.llm_config["model"]
 
         logger.info("Using LLM Config manager")
@@ -45,12 +46,15 @@ class ConfigManager:
     def _get_llm_provider(self):
         return self.config["general"]["llm_provider"]
 
+    def _get_host(self):
+        return self.config["general"]["host"]
+
 
 if __name__ == "__main__":
     manager = ConfigManager()
     print(manager.config)
     print(manager.port)
-    print(manager.llm_provider)
+    print(manager.llm_provider_name)
     print(manager.api_key)
     print(manager.llm_config)
     print(manager.llm_config["model"])
