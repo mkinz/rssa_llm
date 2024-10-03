@@ -50,7 +50,7 @@ llm = llm_provider()
 @app.route("/process", methods=["POST"])
 def process_data():
     try:
-        logger.info(f":Received request data: {request.data}")
+        logger.debug(f":Received request data: {request.data}")
 
         user_data = request.json
         if not user_data:

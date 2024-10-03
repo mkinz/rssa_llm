@@ -20,7 +20,7 @@ class BaseAIProvider(ABC):
         self.model = self.manager.model
         self.llm_config = self.manager.llm_config
         self.client = self._create_client()
-        logger.info("Instantiated BaseAIProvider class")
+        logger.debug("Instantiated BaseAIProvider class")
 
     @abstractmethod
     def _create_client(self) -> Any:
@@ -52,7 +52,7 @@ class BaseAIProvider(ABC):
 class OpenAIProvider(BaseAIProvider):
     def __init__(self, config_manager: ConfigManager):
         super().__init__(config_manager)
-        logger.info("Instantiated OpenAIProvider class")
+        logger.debug("Instantiated OpenAIProvider class")
 
     def _create_client(self):
         return OpenAI(api_key=self.api_key)

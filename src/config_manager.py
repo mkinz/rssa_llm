@@ -16,16 +16,16 @@ class ConfigManager:
         self.llm_config = self._get_llm_config(llm_name=self.llm_provider_name)
         self.model = self.llm_config["model"]
 
-        logger.info("Using LLM Config manager")
+        logger.debug("Using LLM Config manager")
 
     def _load_config(self):
         with open(self.config_path, "r") as f:
-            logger.info(f"Loaded config from path: {self.config_path}")
+            logger.debug(f"Loaded config from path: {self.config_path}")
             return yaml.safe_load(f)
 
     def _get_api_key(self, llm_provider):
         try:
-            logger.info("Loading api key")
+            logger.debug("Loading api key")
             return os.environ.get(f"{llm_provider.upper()}_API_KEY")
         except ValueError:
             raise ValueError(
@@ -37,7 +37,7 @@ class ConfigManager:
             raise ValueError(
                 f"Configuration for {llm_name} not found in the config file."
             )
-        logger.info(f"Using llm config for: {self.config[llm_name]}")
+        logger.debug(f"Using llm config for: {self.config[llm_name]}")
         return self.config[llm_name]
 
     def _get_port(self):
