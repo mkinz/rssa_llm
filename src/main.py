@@ -107,6 +107,25 @@ def process_data():
         ), 500
 
 
+@app.route("/healthz", methods=["GET"])
+def health_check():
+    logger.info("Health check requested")
+    return "", 200
+
+
+@app.route("/ready", methods=["GET"])
+def readiness_check():
+    logger.info("Readiness check requested")
+    try:
+        # Perform a simple request to the LLM provider
+        llm.analyze("Test", "This is a test.")
+        logger.info("Readiness check passed")
+        return "", 200
+    except Exception as e:
+        logger.error(f"Readiness check failed: {str(e)}")
+        return "Service is not ready", 503
+
+
 if __name__ == "__main__":
     setup_logging()
     app.run(host=config_manager.host, port=int(config_manager.port), debug=False)
