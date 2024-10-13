@@ -2,6 +2,7 @@ annoy>=1.17.3
 anthropic>=0.34.2
 beautifulsoup4>=4.12.3
 cohere>=5.9.4
+gunicorn>=23.0.0
 openai>=1.47.0
 pytest>=8.3.2
 python-dotenv>=1.0.1

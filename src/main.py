@@ -1,17 +1,17 @@
 from flask import Flask, request, jsonify
 from flask.logging import default_handler
-from logging_config import setup_logging
-from valid_html import validate_llm_html
-from llm_interface import (
+from .logging_config import setup_logging
+from .valid_html import validate_llm_html
+from .llm_interface import (
     OpenAIProvider,
     CohereAIProvider,
     AnthropicAIProvider,
 )
-from roadmap_output_ingestor import preprocess_roadmap_output
-from logging_config import get_logger
-from html_cleaner import strip_newlines_from_html
+from .roadmap_output_ingestor import preprocess_roadmap_output
+from .logging_config import get_logger
+from .html_cleaner import strip_newlines_from_html
 
-from config_manager import ConfigManager
+from .config_manager import ConfigManager
 from dotenv import load_dotenv
 
 # set environment vars
@@ -137,4 +137,7 @@ def readiness_check():
 
 if __name__ == "__main__":
     setup_logging()
-    app.run(host=config_manager.host, port=int(config_manager.port), debug=False)
+    # Line below is used for testing app with flask server.
+    # app.run(host=config_manager.host, port=int(config_manager.port), debug=False)
+    # In production, using gunicorn from cmd line:
+    # gunicorn --workers 4 src.main:app

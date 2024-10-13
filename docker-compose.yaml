@@ -12,15 +12,15 @@ services:
       - INPUT_SOURCE=api # this will be changed to api in production
       - API_KEY=${API_KEY}
       - API_URL=${API_URL}
-      - PORT=5050
+      - PORT=8000
       - LLM_PROVIDER=openai
     
     volumes:
       - ./:/app
     working_dir: /app
-    command: python -u src/main.py
+    command: gunicorn --bind 0.0.0.0:8000 --workers 4 src.main:app
     ports:
-      - "5050:5050"
+      - "8000:8000"
 
 networks:
   app_network:

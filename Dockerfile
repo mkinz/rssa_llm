@@ -12,10 +12,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 RUN pip install -e .
 
-EXPOSE 5050
+EXPOSE 8000
 
 ENV NAME World
 
 
-CMD ["python", "-u", "src/main.py"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5050", "src.main:app"]
 
