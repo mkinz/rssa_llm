@@ -14,8 +14,6 @@ RUN pip install -e .
 
 EXPOSE 8000
 
-ENV NAME World
+ENV PYTHONUNBUFFERED=1
 
-
-CMD ["gunicorn", "--bind", "0.0.0.0:5050", "src.main:app"]
-
+CMD ["gunicorn", "--workers", "4", "--log-level", "info", "--access-logfile", "-", "--error-logfile", "-", "src.main:app"]

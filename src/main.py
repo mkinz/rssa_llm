@@ -17,6 +17,9 @@ from dotenv import load_dotenv
 # set environment vars
 load_dotenv()
 
+# set up logger
+setup_logging()
+
 # set global configuration
 config_manager = ConfigManager()
 
@@ -138,6 +141,6 @@ def readiness_check():
 if __name__ == "__main__":
     setup_logging()
     # Line below is used for testing app with flask server.
-    # app.run(host=config_manager.host, port=int(config_manager.port), debug=False)
+    app.run(host=config_manager.host, port=int(config_manager.port), debug=False)
     # In production, using gunicorn from cmd line:
     # gunicorn --workers 4 src.main:app

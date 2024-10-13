@@ -1,15 +1,15 @@
 import logging
+import sys
 from logging.handlers import RotatingFileHandler, TimedRotatingFileHandler
 from pythonjsonlogger import jsonlogger
 
 
 def setup_logging(log_file="app.log"):
-    logging.basicConfig(level=logging.DEBUG)
     logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
 
     # Console handler
-    console_handler = logging.StreamHandler()
+    console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(logging.INFO)
 
     # File handler (size-based rotation)
