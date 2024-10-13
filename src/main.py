@@ -1,17 +1,17 @@
 from flask import Flask, request, jsonify
 from flask.logging import default_handler
-from .logging_config import setup_logging
-from .valid_html import validate_llm_html
-from .llm_interface import (
+from src.logging_config import setup_logging
+from src.valid_html import validate_llm_html
+from src.llm_interface import (
     OpenAIProvider,
     CohereAIProvider,
     AnthropicAIProvider,
 )
-from .roadmap_output_ingestor import preprocess_roadmap_output
-from .logging_config import get_logger
-from .html_cleaner import strip_newlines_from_html
+from src.roadmap_output_ingestor import preprocess_roadmap_output
+from src.logging_config import get_logger
+from src.html_cleaner import strip_newlines_from_html
 
-from .config_manager import ConfigManager
+from src.config_manager import ConfigManager
 from dotenv import load_dotenv
 
 # set environment vars

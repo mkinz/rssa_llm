@@ -6,8 +6,8 @@ import anthropic
 import cohere
 from openai import OpenAI
 
-from .config_manager import ConfigManager
-from .logging_config import get_logger
+from src.config_manager import ConfigManager
+from src.logging_config import get_logger
 
 
 logger = get_logger(__name__)
