@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from os import system
 from typing import Any
 
 import anthropic
@@ -46,7 +47,9 @@ class BaseAIProvider(ABC):
         Query: {query}
         """
         messages = self._create_messages(system_content, user_content)
-        return self._send_request(messages)
+        req = self._send_request(messages)
+        # return the output, plus the count of input and output chars for token approximation
+        return req, len(system_content + user_content), len(req)
 
 
 class OpenAIProvider(BaseAIProvider):

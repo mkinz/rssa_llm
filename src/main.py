@@ -76,7 +76,7 @@ def process_data():
         """
 
         logger.info("Performing LLM analysis now...")
-        analysis_result = llm.analyze(query, context)
+        analysis_result, len_of_input, len_of_output = llm.analyze(query, context)
         cleaned_results = strip_newlines_from_html(analysis_result)
 
         logger.info("Performing HTML validation now...")
@@ -84,7 +84,16 @@ def process_data():
 
         if validated:
             logger.info("HTML was validated!")
-            return jsonify({"status": "success", "html_report": cleaned_results})
+            return jsonify(
+                {
+                    "html_report": cleaned_results,
+                    "input_length": len_of_input,
+                    "output_length": len_of_output,
+                    "total_chars": len_of_input + len_of_output,
+                    "token approximation": (len_of_input + len_of_output) / 4,
+                    "status": "success",
+                }
+            )
         else:
             logger.error(f"HTML Validation failed: {validation_message}")
             return jsonify(
