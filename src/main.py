@@ -90,6 +90,8 @@ def process_data():
             return jsonify(
                 {
                     "html_report": cleaned_results,
+                    "provider": config_manager.llm_provider_name,
+                    "model": config_manager.model,
                     "input_length": len_of_input,
                     "output_length": len_of_output,
                     "total_chars": len_of_input + len_of_output,

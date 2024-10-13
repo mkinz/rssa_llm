@@ -6,6 +6,14 @@ logger = get_logger(__name__)
 
 
 class ConfigManager:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        # implement the singleton pattern so we only ever have one instance of config manager
+        if not cls._instance:
+            cls._instance = super(ConfigManager, cls).__new__(cls, *args, **kwargs)
+        return cls._instance
+
     def __init__(self, config_path="src/run/config.yaml"):
         self.config_path = config_path
         self.config = self._load_config()
@@ -17,6 +25,7 @@ class ConfigManager:
         self.model = self.llm_config["model"]
 
         logger.debug("Using LLM Config manager")
+        self.initialized = True
 
     def _load_config(self):
         with open(self.config_path, "r") as f:
