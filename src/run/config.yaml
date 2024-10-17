@@ -1,6 +1,6 @@
 general:
   llm_provider: "openai"
-  port: 5050
+  port: 8000
   host: "0.0.0.0"
 
 openai:

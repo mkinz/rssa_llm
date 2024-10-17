@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   myapp:
-    image: rssa_llm
+    image: rssa_llm:latest
     build: 
       context: .
       dockerfile: Dockerfile
@@ -20,7 +20,7 @@ services:
     working_dir: /app
     command: gunicorn --bind 0.0.0.0:8000 --workers 4 src.main:app
     ports:
-      - "8000:8000"
+      - "8000:80"
 
 networks:
   app_network:
