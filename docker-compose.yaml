@@ -18,7 +18,7 @@ services:
     volumes:
       - ./:/app
     working_dir: /app
-    command: gunicorn --bind 0.0.0.0:8000 --workers 4 src.main:app
+    command: gunicorn --bind 0.0.0.0:80 --workers 4 src.main:app
     ports:
       - "8000:80"
 
