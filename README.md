@@ -3,14 +3,14 @@ RSSA LLM (no rag)
 2. pip3 install -r requirements.txt
 
 To run flask webserver:
-3. python run_dev_server.py
+python run_dev_server.py
 
 To run prod webserver:
-3. gunicorn --log-level debug --capture-output --enable-stdio-inheritance src.main:app
+gunicorn --log-level debug --capture-output --enable-stdio-inheritance src.main:app
 
 
 To build project in Docker and run prod websever in container:
-3. docker-compose up --build
+docker-compose up --build
 
 To test webserver is running:
 python3 mock_api.py --url http://localhost:8000 --healthz
